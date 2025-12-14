@@ -1,6 +1,6 @@
 {
   "name": "network-smart-handler",
-  "version": "0.1.0",
+  "version": "1.0.1",
   "description": "A smart network handler package for Web and React Native that provides intelligent network detection, automatic request queuing, retry logic, and user-friendly notifications.",
   "main": "./lib/module/index.js",
   "types": "./lib/typescript/src/index.d.ts",
@@ -42,8 +42,20 @@
   },
   "keywords": [
     "react-native",
+    "react",
+    "network",
+    "offline",
+    "online",
+    "retry",
+    "queue",
+    "fetch",
+    "axios",
+    "network-status",
+    "network-handler",
+    "smart-fetch",
     "ios",
-    "android"
+    "android",
+    "web"
   ],
   "repository": {
     "type": "git",
@@ -85,6 +97,11 @@
   "peerDependencies": {
     "react": "*",
     "react-native": "*"
+  },
+  "peerDependenciesMeta": {
+    "@react-native-community/netinfo": {
+      "optional": true
+    }
   },
   "workspaces": [
     "example"
