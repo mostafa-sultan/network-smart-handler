@@ -1,6 +1,6 @@
 {
   "name": "network-smart-handler",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A smart network handler package for Web and React Native that provides intelligent network detection, automatic request queuing, retry logic, and user-friendly notifications.",
   "main": "./lib/module/index.js",
   "types": "./lib/typescript/src/index.d.ts",

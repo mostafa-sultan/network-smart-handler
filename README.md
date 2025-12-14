@@ -1,22 +1,20 @@
-# Network Status Smart Handler
-
-حزمة ذكية لإدارة حالة الشبكة لتطبيقات React و React Native. توفر كشف ذكي لحالة الشبكة (Weak/Medium/Strong)، منطق إعادة المحاولة القابل للتخصيص، صف تلقائي للطلبات، وإشعارات جاهزة للاستخدام.
+# Network Smart Handler
 
 A smart network handler package for React and React Native applications. Provides intelligent network status detection (Weak/Medium/Strong), customizable retry logic, automatic request queuing, and ready-to-use notifications.
 
-## المميزات / Features
+## Features
 
-- ✅ **استخدام بسيط جداً** - `getNetworkState()` يعطيك state مباشرة بدون Provider
-- ✅ **كشف ذكي لحالة الشبكة** - ليس فقط online/offline بل Weak/Medium/Strong
-- ✅ **منطق إعادة المحاولة** - استراتيجيات متعددة (fixed, exponential, exponential-jitter)
-- ✅ **صف تلقائي للطلبات** - يحفظ الطلبات عند انقطاع الشبكة ويعيد إرسالها تلقائياً
-- ✅ **إشعارات جاهزة** - مكونات Banner/Toast قابلة للتخصيص
-- ✅ **Hooks سهلة** - `useNetworkStatus()`, `useSmartFetch()`, `useQueuedRequests()`
-- ✅ **Cross-platform** - يعمل على Web و React Native (Android/iOS)
-- ✅ **Observability** - إحصائيات و telemetry callbacks
-- ✅ **Adapters** - دعم fetch و axios
+- **Simple API** - `getNetworkState()` gives you state directly without Provider
+- **Intelligent Network Detection** - Not just online/offline, but Weak/Medium/Strong quality levels
+- **Retry Logic** - Multiple strategies (fixed, exponential, exponential-jitter)
+- **Automatic Request Queuing** - Saves requests when offline and retries automatically
+- **Ready-to-use Notifications** - Customizable Banner/Toast components
+- **Easy Hooks** - `useNetworkStatus()`, `useSmartFetch()`, `useQueuedRequests()`
+- **Cross-platform** - Works on Web and React Native (Android/iOS)
+- **Observability** - Statistics and telemetry callbacks
+- **Adapters** - Support for fetch and axios
 
-## التثبيت / Installation
+## Installation
 
 ```bash
 npm install network-smart-handler
@@ -26,8 +24,6 @@ yarn add network-smart-handler
 
 ### React Native
 
-لـ React Native، تحتاج أيضاً إلى تثبيت `@react-native-community/netinfo`:
-
 For React Native, you also need to install `@react-native-community/netinfo`:
 
 ```bash
@@ -36,16 +32,16 @@ npm install @react-native-community/netinfo
 yarn add @react-native-community/netinfo
 ```
 
-## الاستخدام الأساسي / Basic Usage
+## Quick Start
 
-### 🚀 الاستخدام البسيط (Simple API) - بدون Provider
+### Simple API (No Provider Required)
 
-أسهل طريقة للاستخدام! فقط استدعي الدالة واحصل على state مباشرة:
+The easiest way to use the library! Just call the function and get state directly:
 
 ```typescript
 import { getNetworkState, initNetworkHandler, simpleSmartFetch } from 'network-smart-handler';
 
-// تهيئة (اختيارية - يمكن استخدام defaults)
+// Initialize (optional - can use defaults)
 initNetworkHandler({
   retry: {
     maxAttempts: 3,
@@ -53,52 +49,21 @@ initNetworkHandler({
   },
 });
 
-// الحصول على state مباشرة - في أي مكان في الكود
+// Get state directly - anywhere in your code
 const state = getNetworkState();
 console.log(state.isOnline);    // true/false
 console.log(state.quality);     // 'weak' | 'medium' | 'strong'
 console.log(state.type);        // 'wifi' | 'cellular' | 'ethernet' | 'unknown'
-console.log(state.latency);     // عدد milliseconds
-console.log(state.statistics);   // إحصائيات الشبكة
-console.log(state.queuedRequests); // الطلبات في الانتظار
+console.log(state.latency);     // number in milliseconds
+console.log(state.statistics);   // network statistics
+console.log(state.queuedRequests); // queued requests
 
-// استخدام smart fetch
+// Use smart fetch
 const response = await simpleSmartFetch('https://api.example.com/data');
 const data = await response.json();
 ```
 
-#### مثال كامل:
-
-```typescript
-import { getNetworkState, simpleSmartFetch, subscribeToNetworkState } from 'network-smart-handler';
-
-// في أي component أو function
-function checkNetwork() {
-  const state = getNetworkState();
-  
-  if (!state.isOnline) {
-    console.log('الشبكة غير متصلة');
-    return;
-  }
-  
-  if (state.quality === 'weak') {
-    console.log('الشبكة ضعيفة، قد يكون هناك تأخير');
-  }
-  
-  console.log(`نوع الشبكة: ${state.type}`);
-  console.log(`السرعة: ${state.latency}ms`);
-}
-
-// الاشتراك في التحديثات
-const unsubscribe = subscribeToNetworkState((state) => {
-  console.log('تغيرت حالة الشبكة:', state.isOnline, state.quality);
-});
-
-// إلغاء الاشتراك لاحقاً
-// unsubscribe();
-```
-
-#### في React Component:
+### React Component Example
 
 ```tsx
 import { useEffect, useState } from 'react';
@@ -116,17 +81,17 @@ function MyComponent() {
 
   return (
     <div>
-      <p>الشبكة: {networkState.isOnline ? 'متصل' : 'غير متصل'}</p>
-      <p>الجودة: {networkState.quality}</p>
-      <p>النوع: {networkState.type}</p>
+      <p>Network: {networkState.isOnline ? 'Online' : 'Offline'}</p>
+      <p>Quality: {networkState.quality}</p>
+      <p>Type: {networkState.type}</p>
     </div>
   );
 }
 ```
 
----
+## Advanced Usage
 
-### 1. إعداد Provider (للاستخدام المتقدم)
+### Provider Setup
 
 ```tsx
 import { NetworkProvider } from 'network-smart-handler';
@@ -152,7 +117,7 @@ export default function Root() {
           medium: 300, // latency > 300ms = medium
         },
       }}
-      showNotification={true} // Show built-in notification
+      showNotification={true}
     >
       <App />
     </NetworkProvider>
@@ -160,7 +125,7 @@ export default function Root() {
 }
 ```
 
-### 2. استخدام Hooks
+### Using Hooks
 
 ```tsx
 import { useNetworkStatus, useSmartFetch } from 'network-smart-handler';
@@ -197,7 +162,7 @@ function MyComponent() {
 }
 ```
 
-### 3. استخدام Notification مخصص
+### Custom Notification
 
 ```tsx
 import { NetworkNotification, useNetworkStatus, useQueuedRequests } from 'network-smart-handler';
@@ -498,7 +463,3 @@ MIT
 ## Contributing
 
 Contributions are welcome! Please read our contributing guidelines.
-
----
-
-Made with ❤️ for better network handling in React and React Native apps.
