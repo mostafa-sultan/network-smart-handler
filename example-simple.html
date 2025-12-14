@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Network Smart Handler - مثال بسيط</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+    .status {
+      margin: 15px 0;
+      padding: 10px;
+      background: #f9f9f9;
+      border-radius: 5px;
+    }
+    .status-label {
+      font-weight: bold;
+      color: #666;
+    }
+    .status-value {
+      color: #333;
+      margin-right: 10px;
+    }
+    .online { color: #28a745; }
+    .offline { color: #dc3545; }
+    .weak { color: #ffc107; }
+    .medium { color: #17a2b8; }
+    .strong { color: #28a745; }
+    button {
+      background: #007AFF;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 20px;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 15px;
+      background: #e7f3ff;
+      border-radius: 5px;
+      display: none;
+    }
+    .result.show {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🌐 Network Smart Handler</h1>
+    
+    <div class="status">
+      <span class="status-label">حالة الاتصال:</span>
+      <span class="status-value" id="isOnline">جاري التحميل...</span>
+    </div>
+    
+    <div class="status">
+      <span class="status-label">جودة الشبكة:</span>
+      <span class="status-value" id="quality">جاري التحميل...</span>
+    </div>
+    
+    <div class="status">
+      <span class="status-label">نوع الشبكة:</span>
+      <span class="status-value" id="type">جاري التحميل...</span>
+    </div>
+    
+    <div class="status">
+      <span class="status-label">السرعة (Latency):</span>
+      <span class="status-value" id="latency">جاري التحميل...</span>
+    </div>
+    
+    <div class="status">
+      <span class="status-label">الطلبات في الانتظار:</span>
+      <span class="status-value" id="queued">0</span>
+    </div>
+    
+    <button id="fetchBtn" onclick="testFetch()">اختبار جلب البيانات</button>
+    
+    <div class="result" id="result"></div>
+  </div>
+
+  <script type="module">
+    // استيراد المكتبة (يجب أن تكون مبنية)
+    // في حالة حقيقية، ستستخدم: import { getNetworkState, subscribeToNetworkState, simpleSmartFetch } from 'network-smart-handler';
+    
+    // مثال محاكي للاستخدام (في التطبيق الحقيقي، استخدم المكتبة الفعلية)
+    console.log('مثال الاستخدام البسيط:');
+    console.log(`
+      import { getNetworkState, subscribeToNetworkState, simpleSmartFetch } from 'network-smart-handler';
+      
+      // الحصول على state مباشرة
+      const state = getNetworkState();
+      console.log(state.isOnline, state.quality);
+      
+      // الاشتراك في التحديثات
+      const unsubscribe = subscribeToNetworkState((state) => {
+        console.log('تغيرت حالة الشبكة:', state);
+      });
+      
+      // استخدام smart fetch
+      const response = await simpleSmartFetch('https://api.example.com/data');
+    `);
+
+    // محاكاة التحديثات (في التطبيق الحقيقي، ستعمل تلقائياً)
+    function updateUI() {
+      // في التطبيق الحقيقي:
+      // const state = getNetworkState();
+      // document.getElementById('isOnline').textContent = state.isOnline ? 'متصل' : 'غير متصل';
+      // ...
+      
+      // محاكاة للعرض
+      const isOnline = navigator.onLine;
+      document.getElementById('isOnline').textContent = isOnline ? 'متصل ✅' : 'غير متصل ❌';
+      document.getElementById('isOnline').className = isOnline ? 'online' : 'offline';
+      document.getElementById('quality').textContent = 'medium';
+      document.getElementById('type').textContent = 'wifi';
+      document.getElementById('latency').textContent = 'N/A';
+    }
+
+    // تحديث عند تغيير حالة الشبكة
+    window.addEventListener('online', updateUI);
+    window.addEventListener('offline', updateUI);
+    updateUI();
+
+    // تحديث دوري (في التطبيق الحقيقي، subscribeToNetworkState سيفعل هذا)
+    setInterval(updateUI, 2000);
+  </script>
+
+  <script>
+    async function testFetch() {
+      const btn = document.getElementById('fetchBtn');
+      const result = document.getElementById('result');
+      
+      btn.disabled = true;
+      btn.textContent = 'جاري الجلب...';
+      result.classList.remove('show');
+      
+      try {
+        // في التطبيق الحقيقي:
+        // const response = await simpleSmartFetch('https://jsonplaceholder.typicode.com/posts/1');
+        // const data = await response.json();
+        
+        // محاكاة
+        const response = await fetch('https://jsonplaceholder.typicode.com/posts/1');
+        const data = await response.json();
+        
+        result.innerHTML = `
+          <strong>✅ نجح!</strong><br>
+          <pre>${JSON.stringify(data, null, 2)}</pre>
+        `;
+        result.classList.add('show');
+      } catch (error) {
+        result.innerHTML = `
+          <strong>❌ خطأ:</strong><br>
+          ${error.message}
+        `;
+        result.classList.add('show');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'اختبار جلب البيانات';
+      }
+    }
+  </script>
+</body>
+</html>
+

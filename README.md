@@ -6,6 +6,7 @@ A smart network handler package for React and React Native applications. Provide
 
 ## المميزات / Features
 
+- ✅ **استخدام بسيط جداً** - `getNetworkState()` يعطيك state مباشرة بدون Provider
 - ✅ **كشف ذكي لحالة الشبكة** - ليس فقط online/offline بل Weak/Medium/Strong
 - ✅ **منطق إعادة المحاولة** - استراتيجيات متعددة (fixed, exponential, exponential-jitter)
 - ✅ **صف تلقائي للطلبات** - يحفظ الطلبات عند انقطاع الشبكة ويعيد إرسالها تلقائياً
@@ -37,7 +38,95 @@ yarn add @react-native-community/netinfo
 
 ## الاستخدام الأساسي / Basic Usage
 
-### 1. إعداد Provider
+### 🚀 الاستخدام البسيط (Simple API) - بدون Provider
+
+أسهل طريقة للاستخدام! فقط استدعي الدالة واحصل على state مباشرة:
+
+```typescript
+import { getNetworkState, initNetworkHandler, simpleSmartFetch } from 'network-smart-handler';
+
+// تهيئة (اختيارية - يمكن استخدام defaults)
+initNetworkHandler({
+  retry: {
+    maxAttempts: 3,
+    strategy: 'exponential',
+  },
+});
+
+// الحصول على state مباشرة - في أي مكان في الكود
+const state = getNetworkState();
+console.log(state.isOnline);    // true/false
+console.log(state.quality);     // 'weak' | 'medium' | 'strong'
+console.log(state.type);        // 'wifi' | 'cellular' | 'ethernet' | 'unknown'
+console.log(state.latency);     // عدد milliseconds
+console.log(state.statistics);   // إحصائيات الشبكة
+console.log(state.queuedRequests); // الطلبات في الانتظار
+
+// استخدام smart fetch
+const response = await simpleSmartFetch('https://api.example.com/data');
+const data = await response.json();
+```
+
+#### مثال كامل:
+
+```typescript
+import { getNetworkState, simpleSmartFetch, subscribeToNetworkState } from 'network-smart-handler';
+
+// في أي component أو function
+function checkNetwork() {
+  const state = getNetworkState();
+  
+  if (!state.isOnline) {
+    console.log('الشبكة غير متصلة');
+    return;
+  }
+  
+  if (state.quality === 'weak') {
+    console.log('الشبكة ضعيفة، قد يكون هناك تأخير');
+  }
+  
+  console.log(`نوع الشبكة: ${state.type}`);
+  console.log(`السرعة: ${state.latency}ms`);
+}
+
+// الاشتراك في التحديثات
+const unsubscribe = subscribeToNetworkState((state) => {
+  console.log('تغيرت حالة الشبكة:', state.isOnline, state.quality);
+});
+
+// إلغاء الاشتراك لاحقاً
+// unsubscribe();
+```
+
+#### في React Component:
+
+```tsx
+import { useEffect, useState } from 'react';
+import { getNetworkState, subscribeToNetworkState } from 'network-smart-handler';
+
+function MyComponent() {
+  const [networkState, setNetworkState] = useState(getNetworkState());
+
+  useEffect(() => {
+    const unsubscribe = subscribeToNetworkState((state) => {
+      setNetworkState(state);
+    });
+    return unsubscribe;
+  }, []);
+
+  return (
+    <div>
+      <p>الشبكة: {networkState.isOnline ? 'متصل' : 'غير متصل'}</p>
+      <p>الجودة: {networkState.quality}</p>
+      <p>النوع: {networkState.type}</p>
+    </div>
+  );
+}
+```
+
+---
+
+### 1. إعداد Provider (للاستخدام المتقدم)
 
 ```tsx
 import { NetworkProvider } from 'network-smart-handler';

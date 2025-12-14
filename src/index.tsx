@@ -16,6 +16,18 @@ export {
   defaultRetryConfig,
 } from './core/retryLogic';
 
+// Simple API - Easy to use, no Provider needed
+export {
+  initNetworkHandler,
+  getNetworkState,
+  subscribeToNetworkState,
+  smartFetch as simpleSmartFetch,
+  getNetworkHandler,
+  clearQueue as clearNetworkQueue,
+  destroyNetworkHandler,
+  type NetworkState,
+} from './core/simpleApi';
+
 // Context & Hooks
 export { NetworkProvider, useNetworkStatus } from './context/NetworkContext';
 export {
